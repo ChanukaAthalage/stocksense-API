@@ -4,7 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
-//import routes from "./src/routes/index.js";
+import routes from "./src/routes/index.js";
 
 dotenv.config();
 
@@ -27,7 +27,7 @@ app.get("/health", (req, res) => {
 await connectDB();
 
 // Routes
-//app.use("/", routes);
+app.use("/api/v1", routes);
 
 // Start server
 app.listen(PORT, () => {
