@@ -5,6 +5,9 @@
   "license": "ISC",
   "author": "",
   "type": "module",
+  "engines": {
+    "node": ">=14.8.0"
+  },
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
