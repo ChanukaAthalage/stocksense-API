@@ -5,6 +5,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 import routes from "./src/routes/index.js";
+import { generalLimiter } from './src/middleware/rateLimiter.js';
 
 dotenv.config();
 
@@ -17,8 +18,6 @@ if (!process.env.JWT_SECRET) {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(helmet());
 // Configure CORS to restrict allowed origins via environment variable.
 // Set `ALLOWED_ORIGINS` to a comma-separated list of allowed client origins,
 // e.g. "https://app.example.com,https://admin.example.com".
@@ -43,7 +42,11 @@ const corsOptions = {
   },
 };
 
+// Middleware
+app.use(helmet());
 app.use(cors(corsOptions));
+// Apply a general rate limit to all incoming requests
+app.use(generalLimiter);
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
