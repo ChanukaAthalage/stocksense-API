@@ -80,6 +80,23 @@ await connectDB();
 // Routes
 app.use("/api/v1", routes);
 
+// Handle CORS errors consistently and return API-friendly 4xx responses.
+app.use((err, req, res, next) => {
+  if (!err || !err.message) {
+    return next(err);
+  }
+
+  if (err.message === 'CORS not configured') {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ success: false, message: err.message });
+  }
+
+  return next(err);
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
