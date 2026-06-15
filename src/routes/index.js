@@ -1,9 +1,8 @@
-import express from 'express';
+import express from "express";
+import authRoutes from "./authRoutes.js";
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.json({ message: 'Welcome to StockSense API' });
-});
+router.use("/auth", authRoutes);
 
 export default router;

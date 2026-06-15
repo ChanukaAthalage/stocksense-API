@@ -4,9 +4,15 @@ import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
-//import routes from "./src/routes/index.js";
+import routes from "./src/routes/index.js";
 
 dotenv.config();
+
+// Validate required environment variables
+if (!process.env.JWT_SECRET) {
+  console.error('Error: JWT_SECRET environment variable is not defined');
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,7 +33,7 @@ app.get("/health", (req, res) => {
 await connectDB();
 
 // Routes
-//app.use("/", routes);
+app.use("/api/v1", routes);
 
 // Start server
 app.listen(PORT, () => {
