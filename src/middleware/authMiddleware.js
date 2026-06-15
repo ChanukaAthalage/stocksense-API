@@ -26,8 +26,8 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Not authorized, token invalid' });
     }
 
-    // Fetch a fresh copy of the user from DB and exclude the password field
-    const user = await User.findById(decoded.id).select('-password');
+    // Fetch a fresh copy of the user from DB
+    const user = await User.findById(decoded.id);
     if (!user) {
       // If the user referenced by the token no longer exists
       return res.status(401).json({ success: false, message: 'Not authorized, user not found' });
