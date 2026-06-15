@@ -47,21 +47,32 @@ const corsOptions = {
 // Middleware
 app.use(helmet());
 app.use(cors(corsOptions));
+
+// Health check route (exempt from rate limiting)
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date() });
+});
+
 // Configure trust proxy for correct client IP extraction when behind a reverse proxy.
-// Set TRUST_PROXY env var to the number of proxy hops if needed.
+// Set TRUST_PROXY env var as a number (e.g., "1") or boolean (e.g., "true").
 if (process.env.TRUST_PROXY) {
-  app.set("trust proxy", process.env.TRUST_PROXY);
+  let trustProxy = process.env.TRUST_PROXY;
+  // Convert string "true" to boolean true
+  if (trustProxy.toLowerCase() === 'true') {
+    trustProxy = true;
+  } else if (trustProxy.toLowerCase() === 'false') {
+    trustProxy = false;
+  } else if (!isNaN(trustProxy)) {
+    // Convert numeric string to number
+    trustProxy = parseInt(trustProxy, 10);
+  }
+  app.set('trust proxy', trustProxy);
 }
 // Apply a general rate limit to all incoming requests
 app.use(generalLimiter);
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// health check route that returns status ok and timestamp
-app.get("/api/v1/health", (req, res) => {
-  res.status(200).json({ status: "ok", timestamp: new Date() });
-});
 
 // Connect to MongoDB
 await connectDB();
