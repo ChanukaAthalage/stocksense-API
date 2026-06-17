@@ -65,7 +65,7 @@ const productSchema = new mongoose.Schema(
 productSchema.pre("save", function (next) {
   if (this.sku && typeof this.sku === "string") {
     this.sku = this.sku.trim().toUpperCase();
-  };
+  }
 });
 
 // Compound index example: unique SKU already defined; add quick lookup index
