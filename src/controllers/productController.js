@@ -45,18 +45,25 @@ export const createProduct = async (req, res) => {
       product,
     });
   } catch (error) {
-    // Handle duplicate SKU error
-    if (error.code === 11000) {
-      return res.status(409).json({
-        success: false,
-        message: "Product SKU already exists",
-      });
-    }
-    res.status(500).json({
+  // Handle duplicate SKU error
+  if (error.code === 11000) {
+    return res.status(409).json({
       success: false,
-      message: "An error occurred during product creation",
+      message: "Product SKU already exists",
     });
   }
+  // Handle validation/cast errors (bad client input)
+  if (error.name === "ValidationError" || error.name === "CastError") {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+  return res.status(500).json({
+    success: false,
+    message: "An error occurred during product creation",
+  });
+}
 };
 
 // Get all products (all roles) with optional category filter
@@ -80,7 +87,7 @@ export const getProducts = async (req, res) => {
       products,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "An error occurred while retrieving products",
     });
@@ -104,7 +111,7 @@ export const getLowStock = async (req, res) => {
       products,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "An error occurred while retrieving low stock products",
     });
@@ -140,7 +147,7 @@ export const getProductById = async (req, res) => {
       product,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "An error occurred while retrieving the product",
     });
@@ -200,7 +207,10 @@ export const updateProduct = async (req, res) => {
       product,
     });
   } catch (error) {
-    res.status(500).json({
+    if (error.name === "ValidationError" || error.name === "CastError") {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+    return res.status(500).json({
       success: false,
       message: "An error occurred while updating the product",
     });
@@ -255,7 +265,10 @@ export const updateStock = async (req, res) => {
       product,
     });
   } catch (error) {
-    res.status(500).json({
+    if (error.name === "ValidationError" || error.name === "CastError") {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+    return res.status(500).json({
       success: false,
       message: "An error occurred while updating product stock",
     });
@@ -293,8 +306,7 @@ export const deleteProduct = async (req, res) => {
       product,
     });
   } catch (error) {
-    console.error("DELETE PRODUCT ERROR:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "An error occurred while deleting the product",
     });
