@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
+import validateWarehouse from "../utils/validateWarehouse.js";
 
 // Create a new product (warehouse_manager only)
 export const createProduct = async (req, res) => {
@@ -18,10 +19,15 @@ export const createProduct = async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!sku || !name) {
-      return res.status(400).json({
+    if (!sku || !name || !warehouseId) {
+      return res.status(400).json({ success: false, message: "SKU, name, and warehouse are required" });
+}
+
+    const warehouseCheck = await validateWarehouse(warehouseId);
+    if (!warehouseCheck.valid) {
+      return res.status(warehouseCheck.status).json({
         success: false,
-        message: "SKU and name are required",
+        message: warehouseCheck.message,
       });
     }
 
@@ -183,7 +189,16 @@ export const updateProduct = async (req, res) => {
     if (reorderLevel !== undefined) updateData.reorderLevel = reorderLevel;
     if (unitCost !== undefined) updateData.unitCost = unitCost;
     if (unit !== undefined) updateData.unit = unit;
-    if (warehouseId !== undefined) updateData.warehouseId = warehouseId;
+    if (warehouseId !== undefined) {
+      const warehouseCheck = await validateWarehouse(warehouseId);
+      if (!warehouseCheck.valid) {
+        return res.status(warehouseCheck.status).json({
+          success: false,
+          message: warehouseCheck.message,
+        });
+      }
+      updateData.warehouseId = warehouseId;
+    }
     if (supplierId !== undefined) updateData.supplierId = supplierId;
 
     const product = await Product.findOneAndUpdate(

@@ -1,6 +1,7 @@
 import express from "express";
 import authRoutes from "./authRoutes.js";
 import productRoutes from "./productRoutes.js";
+import warehouseRoutes from "./warehouseRoutes.js";
 import { authLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
@@ -10,5 +11,8 @@ router.use("/auth", authLimiter, authRoutes);
 
 // Mount product routes
 router.use("/products", productRoutes);
+
+// Mount warehouse routes
+router.use("/warehouses", warehouseRoutes);
 
 export default router;
