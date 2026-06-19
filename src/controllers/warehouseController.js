@@ -1,15 +1,25 @@
 import mongoose from "mongoose";
 import Warehouse from "../models/Warehouse.js";
+import validateManager from "../utils/validateManager.js";
 
 // Create a new warehouse (admin only)
 export const createWarehouse = async (req, res) => {
   try {
     const { name, location, contactEmail, contactPhone, managerId } = req.body;
 
-    if (!name || !location || !contactEmail || !contactPhone) {
+    if (!name || !location || !contactEmail || !contactPhone || !managerId) {
       return res.status(400).json({
         success: false,
-        message: "Name, location, contact email, and contact phone are required",
+        message:
+          "Name, location, contact email, contact phone, and manager are required",
+      });
+    }
+
+    const managerCheck = await validateManager(managerId);
+    if (!managerCheck.valid) {
+      return res.status(managerCheck.status).json({
+        success: false,
+        message: managerCheck.message,
       });
     }
 
@@ -74,10 +84,10 @@ export const getWarehouseById = async (req, res) => {
       });
     }
 
-    const warehouse = await Warehouse.findOne({ _id: id, isActive: true }).populate(
-      "managerId",
-      "name email",
-    );
+    const warehouse = await Warehouse.findOne({
+      _id: id,
+      isActive: true,
+    }).populate("managerId", "name email");
 
     if (!warehouse) {
       return res.status(404).json({
@@ -117,7 +127,16 @@ export const updateWarehouse = async (req, res) => {
     if (location !== undefined) updateData.location = location;
     if (contactEmail !== undefined) updateData.contactEmail = contactEmail;
     if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
-    if (managerId !== undefined) updateData.managerId = managerId;
+    if (managerId !== undefined) {
+      const managerCheck = await validateManager(managerId);
+      if (!managerCheck.valid) {
+        return res.status(managerCheck.status).json({
+          success: false,
+          message: managerCheck.message,
+        });
+      }
+      updateData.managerId = managerId;
+    }
 
     const warehouse = await Warehouse.findOneAndUpdate(
       { _id: id, isActive: true },
