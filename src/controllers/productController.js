@@ -20,7 +20,7 @@ export const createProduct = async (req, res) => {
 
     // Validate required fields
     if (!sku || !name || !warehouseId) {
-      return res.status(400).json({ message: "SKU, name, and warehouse are required" });
+      return res.status(400).json({ success: false, message: "SKU, name, and warehouse are required" });
 }
 
     const warehouseCheck = await validateWarehouse(warehouseId);

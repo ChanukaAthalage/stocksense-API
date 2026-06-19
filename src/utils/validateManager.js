@@ -6,8 +6,8 @@ const validateManager = async (managerId) => {
     return { valid: false, status: 400, message: "Invalid manager ID format" };
   }
 
-  const manager = await User.findById(managerId).lean();
-  if (!manager || manager.role !== "warehouse_manager") {
+  const manager = await User.findOne({ _id: managerId, role: "warehouse_manager", isActive: true }).lean();
+  if (!manager) {
     return {
       valid: false,
       status: 404,
