@@ -14,11 +14,11 @@ const router = Router();
 // POST / - Create warehouse (admin only)
 router.post("/", protect, authorizeRoles("admin"), createWarehouse);
 
-// GET / - Get all warehouses (all roles)
-router.get("/", protect, authorizeRoles("admin", "warehouse_manager", "supplier"), getWarehouses);
+// GET / - Get all warehouses (admin, warehouse_manager)
+router.get("/", protect, authorizeRoles("admin", "warehouse_manager"), getWarehouses);
 
-// GET /:id - Get warehouse by ID (all roles)
-router.get("/:id", protect, authorizeRoles("admin", "warehouse_manager", "supplier"), getWarehouseById);
+// GET /:id - Get warehouse by ID (admin, warehouse_manager)
+router.get("/:id", protect, authorizeRoles("admin", "warehouse_manager"), getWarehouseById);
 
 // PUT /:id - Update warehouse (admin only)
 router.put("/:id", protect, authorizeRoles("admin"), updateWarehouse);

@@ -194,8 +194,13 @@ export const updateWarehouseContact = async (req, res) => {
     if (contactEmail !== undefined) updateData.contactEmail = contactEmail;
     if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
 
+    const filter = { _id: id, isActive: true };
+    if (req.user.role === 'warehouse_manager') {
+      filter.managerId = req.user._id;
+    }
+
     const warehouse = await Warehouse.findOneAndUpdate(
-      { _id: id, isActive: true },
+      filter,
       updateData,
       { new: true, runValidators: true },
     ).populate("managerId", "name email");
