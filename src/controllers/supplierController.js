@@ -113,6 +113,13 @@ export const updateSupplier = async (req, res) => {
     if (location !== undefined) updateData.location = location;
     if (leadTime !== undefined) updateData.leadTime = leadTime;
 
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one valid field must be provided for the update",
+      });
+    }
+
     const supplier = await Supplier.findOneAndUpdate(
       { _id: id, isActive: true },
       updateData,
