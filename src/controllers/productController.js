@@ -32,7 +32,7 @@ export const createProduct = async (req, res) => {
       });
     }
 
-    if (supplierId !== undefined) {
+    if (supplierId !== undefined && supplierId !== null) {
       const supplierCheck = await validateSupplier(supplierId);
       if (!supplierCheck.valid) {
         return res.status(supplierCheck.status).json({
@@ -210,7 +210,7 @@ export const updateProduct = async (req, res) => {
       }
       updateData.warehouseId = warehouseId;
     }
-    if (supplierId !== undefined) {
+    if (supplierId !== undefined && supplierId !== null) {
       const supplierCheck = await validateSupplier(supplierId);
       if (!supplierCheck.valid) {
         return res.status(supplierCheck.status).json({
@@ -219,6 +219,8 @@ export const updateProduct = async (req, res) => {
         });
       }
       updateData.supplierId = supplierId;
+    } else if (supplierId === null) {
+      updateData.supplierId = null;
     }
 
     const product = await Product.findOneAndUpdate(

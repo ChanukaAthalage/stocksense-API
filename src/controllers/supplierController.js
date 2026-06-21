@@ -93,7 +93,7 @@ export const getSupplierById = async (req, res) => {
   }
 };
 
-// Full update of a supplier (admin only)
+// Update of a supplier (admin only)
 export const updateSupplier = async (req, res) => {
   try {
     const { id } = req.params;
