@@ -15,14 +15,14 @@ const router = Router();
 // POST / - Create product (warehouse_manager, admin)
 router.post('/', protect, authorizeRoles('warehouse_manager', 'admin'), createProduct);
 
-// GET / - Get all products (warehouse_manager, supplier, admin)
-router.get('/', protect, authorizeRoles('warehouse_manager', 'supplier', 'admin'), getProducts);
+// GET / - Get all products (warehouse_manager, admin)
+router.get('/', protect, authorizeRoles('warehouse_manager', 'admin'), getProducts);
 
 // GET /low-stock - Get low stock products (warehouse_manager, admin)
 router.get('/low-stock', protect, authorizeRoles('warehouse_manager', 'admin'), getLowStock);
 
-// GET /:id - Get product by ID (warehouse_manager, supplier, admin)
-router.get('/:id', protect, authorizeRoles('warehouse_manager', 'supplier', 'admin'), getProductById);
+// GET /:id - Get product by ID (warehouse_manager, admin)
+router.get('/:id', protect, authorizeRoles('warehouse_manager', 'admin'), getProductById);
 
 // PUT /:id - Update product (warehouse_manager, admin)
 router.put('/:id', protect, authorizeRoles('warehouse_manager', 'admin'), updateProduct);

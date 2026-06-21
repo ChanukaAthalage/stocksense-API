@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['warehouse_manager', 'supplier', 'admin'],
+      enum: ['warehouse_manager', 'admin'],
       default: 'warehouse_manager',
     },
     isActive: {
@@ -39,9 +39,9 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash the password before saving the user document.
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    return next();
+    return;
   }
 
   const salt = await bcrypt.genSalt(10);
