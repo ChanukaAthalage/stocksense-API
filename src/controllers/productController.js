@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
 import validateWarehouse from "../utils/validateWarehouse.js";
+import validateSupplier from "../utils/validateSupplier.js";
 
 // Create a new product (warehouse_manager only)
 export const createProduct = async (req, res) => {
@@ -29,6 +30,16 @@ export const createProduct = async (req, res) => {
         success: false,
         message: warehouseCheck.message,
       });
+    }
+
+    if (supplierId !== undefined) {
+      const supplierCheck = await validateSupplier(supplierId);
+      if (!supplierCheck.valid) {
+        return res.status(supplierCheck.status).json({
+          success: false,
+          message: supplierCheck.message,
+        });
+      }
     }
 
     // Create product
@@ -199,7 +210,16 @@ export const updateProduct = async (req, res) => {
       }
       updateData.warehouseId = warehouseId;
     }
-    if (supplierId !== undefined) updateData.supplierId = supplierId;
+    if (supplierId !== undefined) {
+      const supplierCheck = await validateSupplier(supplierId);
+      if (!supplierCheck.valid) {
+        return res.status(supplierCheck.status).json({
+          success: false,
+          message: supplierCheck.message,
+        });
+      }
+      updateData.supplierId = supplierId;
+    }
 
     const product = await Product.findOneAndUpdate(
   { _id: id, isActive: true },  
