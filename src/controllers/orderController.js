@@ -1,7 +1,16 @@
 import mongoose from "mongoose";
 import Order from "../models/Order.js";
+import validateProduct from "../utils/validateProduct.js";
+import validateSupplier from "../utils/validateSupplier.js";
 
 const VALID_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"];
+const TRANSITIONS = {
+  pending:   ["confirmed", "cancelled"],
+  confirmed: ["shipped", "cancelled"],
+  shipped:   ["delivered", "cancelled"],
+  delivered: [],
+  cancelled: [],
+};
 
 // Create a new order (warehouse_manager only)
 export const createOrder = async (req, res) => {
@@ -12,6 +21,22 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Product, supplier, and quantity are required",
+      });
+    }
+
+    const productCheck = await validateProduct(productId);
+    if (!productCheck.valid) {
+      return res.status(productCheck.status).json({
+        success: false,
+        message: productCheck.message,
+      });
+    }
+
+    const supplierCheck = await validateSupplier(supplierId);
+    if (!supplierCheck.valid) {
+      return res.status(supplierCheck.status).json({
+        success: false,
+        message: supplierCheck.message,
       });
     }
 
@@ -124,6 +149,21 @@ export const updateOrderStatus = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: `Status must be one of: ${VALID_STATUSES.join(", ")}`,
+      });
+    }
+
+    const currentOrder = await Order.findById(id);
+    if (!currentOrder) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (!TRANSITIONS[currentOrder.status].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot transition order from '${currentOrder.status}' to '${status}'`,
       });
     }
 
