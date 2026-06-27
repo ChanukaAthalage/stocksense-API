@@ -152,7 +152,7 @@ export const updateOrderStatus = async (req, res) => {
       });
     }
 
-    const currentOrder = await Order.findById(id);
+    const currentOrder = await Order.findOne({ _id: id, isActive: true });
     if (!currentOrder) {
       return res.status(404).json({
         success: false,
