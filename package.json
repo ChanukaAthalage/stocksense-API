@@ -6,7 +6,7 @@
   "author": "",
   "type": "module",
   "engines": {
-    "node": ">=16"
+    "node": ">=24"
   },
   "main": "server.js",
   "scripts": {
