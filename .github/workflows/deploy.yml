@@ -38,7 +38,11 @@ jobs:
               --restart unless-stopped \
               stocksense-api
             sleep 10
-            curl -sf http://localhost:5000/api/v1/health || {
+            for i in 1 2 3 4 5; do
+              curl -sf --connect-timeout 5 --max-time 10 http://localhost:5000/api/v1/health && break
+              echo "Health check attempt $i failed, retrying..."
+              sleep 5
+            done || {
               docker logs stocksense
               exit 1
             }
