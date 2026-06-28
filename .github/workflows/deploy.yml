@@ -23,9 +23,11 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e
             cd /root/stocksense-API
             git fetch origin main
             git reset --hard ${{ github.sha }}
+            git clean -fd
             docker build -t stocksense-api .
             docker stop stocksense || true
             docker rm stocksense || true
@@ -36,7 +38,7 @@ jobs:
               --restart unless-stopped \
               stocksense-api
             sleep 10
-            docker ps --filter "name=^/stocksense$" --filter "status=running" | grep -q stocksense || {
+            curl -sf http://localhost:5000/api/v1/health || {
               docker logs stocksense
               exit 1
             }
