@@ -79,7 +79,7 @@ Suppliers are modeled as business records (name, contact details, lead time) rat
 
 The API is deployed on a Hostinger VPS running Docker:
 
-```
+```text
 Base URL: http://187.77.144.230:5000/api/v1
 Health:   http://187.77.144.230:5000/api/v1/health
 ```
@@ -131,12 +131,14 @@ docker run -p 5000:5000 --env-file .env stocksense-api
 ## API Endpoints
 
 ### Authentication
+
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
 | POST | `/api/v1/auth/register` | Public | Register a new user |
 | POST | `/api/v1/auth/login` | Public | Log in and receive a JWT |
 
 ### Products
+
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
 | POST | `/api/v1/products` | warehouse_manager, admin | Create a new product |
@@ -148,6 +150,7 @@ docker run -p 5000:5000 --env-file .env stocksense-api
 | DELETE | `/api/v1/products/:id` | admin | Soft-delete a product |
 
 ### Warehouses
+
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
 | POST | `/api/v1/warehouses` | admin | Create a new warehouse |
@@ -158,6 +161,7 @@ docker run -p 5000:5000 --env-file .env stocksense-api
 | DELETE | `/api/v1/warehouses/:id` | admin | Soft-delete a warehouse |
 
 ### Suppliers
+
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
 | POST | `/api/v1/suppliers` | admin | Create a new supplier |
@@ -167,6 +171,7 @@ docker run -p 5000:5000 --env-file .env stocksense-api
 | DELETE | `/api/v1/suppliers/:id` | admin | Soft-delete a supplier |
 
 ### Orders
+
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
 | POST | `/api/v1/orders` | warehouse_manager | Create a new order |
@@ -176,6 +181,7 @@ docker run -p 5000:5000 --env-file .env stocksense-api
 | DELETE | `/api/v1/orders/:id` | admin | Soft-delete an order |
 
 ### Utility
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/v1/health` | Health check for uptime monitoring |
