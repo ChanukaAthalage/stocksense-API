@@ -5,6 +5,12 @@ on:
     branches:
       - main
 
+permissions: {}
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,7 +24,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /root/stocksense-API
-            git pull origin main
+            git fetch origin main
+            git reset --hard ${{ github.sha }}
             docker build -t stocksense-api .
             docker stop stocksense || true
             docker rm stocksense || true
