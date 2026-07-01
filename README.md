@@ -223,11 +223,7 @@ Every feature is built on its own branch, merged into `dev` for integration, the
 - [x] Order management with status lifecycle state machine
 - [x] Docker containerization
 - [x] Deployment on Hostinger VPS
-- [ ] CI/CD pipeline with GitHub Actions
-- [ ] Real-time stock alerts via Socket.io
-- [ ] File uploads (product images, supplier invoices) via AWS S3
-- [ ] Email notifications via AWS SES
-- [ ] Automated test suite (Jest)
+- [x] CI/CD pipeline with GitHub Actions
 
 ## License
 
